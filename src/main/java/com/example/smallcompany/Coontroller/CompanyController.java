@@ -1,18 +1,17 @@
 package com.example.smallcompany.Coontroller;
 
-import com.example.smallcompany.payload.ApiResponce;
+import com.example.smallcompany.entity.Company;
+import com.example.smallcompany.payload.ApiResponse;
 import com.example.smallcompany.payload.CompanyDto;
 import com.example.smallcompany.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,9 +21,18 @@ public class CompanyController {
 
     @PostMapping
     public HttpEntity<?> addCompany(@Valid @RequestBody CompanyDto companyDto) {
-        ApiResponce apiResponce = companyService.addCompany(companyDto);
-        return ResponseEntity.status(apiResponce.isSuccess() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST).body(apiResponce);
+        ApiResponse apiResponse = companyService.addCompany(companyDto);
+        return ResponseEntity.status(apiResponse.isSuccess() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST).body(apiResponse);
     }
+    @GetMapping
+    private HttpEntity<?> getCompanies(@RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "10") int size){
+     List<Company> companyList=  companyService.getCompanies(page, size);
+     return ResponseEntity.ok(companyList);
+
+
+    }
+
 
 
 }
